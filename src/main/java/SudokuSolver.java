@@ -1,3 +1,5 @@
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
  * form of guessing and would require a more blunt method of solving for numbers after a certain point. It is a possibility
  * that I revisit this code eventually to include this ham-fisted method of solving this problem.
  */
+@Slf4j
 public class SudokuSolver {
     private static final List<Integer> POSSIBLE_VALUES = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
@@ -22,6 +25,10 @@ public class SudokuSolver {
      */
     private boolean isSolved(int x, int y) {
         return getBoxValue(x, y).size() > 1;
+    }
+
+    private boolean containsValue(int x, int y, int value) {
+        return getBoxValue(x, y).contains(value);
     }
 
     /**
@@ -42,7 +49,35 @@ public class SudokuSolver {
         grid[x][y].remove(grid[x][y].indexOf(number));
     }
 
+    private boolean cleanRow(int y, int value) {
+        boolean valueChanged = false;
+        for (int x = 0; x < 9; x++) {
+            if (containsValue(x, y, value)) {
+                removePossibleNumberFromBox(x, y, value);
+                valueChanged = true;
+            }
+        }
+        return valueChanged;
+    }
+
+    private boolean cleanColumn(int x, int value) {
+        boolean valueChanged = false;
+        for (int y = 0; y < 9; y++) {
+            if (containsValue(x, y, value)) {
+                removePossibleNumberFromBox(x, y, value);
+                valueChanged = true;
+            }
+        }
+        return valueChanged;
+    }
+
+    private boolean cleanBox(int x, int y, int value) {
+        int xCoord = (x / 3) * 3;
+        return true;
+    }
+
     public static void main(String... args) {
+        log.info("starting application");
         SudokuSolver sudokuSolver = new SudokuSolver();
     }
 

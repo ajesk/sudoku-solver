@@ -8,3 +8,7 @@
 out
 gen
 
+.gradle/
+gradle/
+gradlew
+gradlew.bat
