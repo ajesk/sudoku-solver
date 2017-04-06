@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Slf4j
 public class SudokuSolver {
-    private static final List<Integer> POSSIBLE_VALUES = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
     private List<Integer>[][] grid;
 
