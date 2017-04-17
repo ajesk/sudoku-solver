@@ -1,3 +1,5 @@
+package io.acode.sudoku_solver.model;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
