@@ -1,5 +1,6 @@
 package io.acode.sudoku_solver;
 
+import io.acode.sudoku_solver.util.Locator;
 import junit.framework.TestCase;
 
 public class LocatorTests extends TestCase {

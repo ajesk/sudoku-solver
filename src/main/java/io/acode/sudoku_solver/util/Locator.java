@@ -1,4 +1,4 @@
-package io.acode.sudoku_solver;
+package io.acode.sudoku_solver.util;
 
 /**
  * Created by aaron on 4/15/17.
