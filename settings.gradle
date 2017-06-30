@@ -15,4 +15,4 @@ include 'shared'
 include 'api'
 include 'services:webservice'
 */
-rootProject.name = 'sudokuSolver'
+rootProject.name = 'sudoku-solver'

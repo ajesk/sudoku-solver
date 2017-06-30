@@ -10,6 +10,5 @@ public class DebugTest extends TestCase {
     public void testLoadDebugGrid() {
         Grid grid = DemoGridLoader.getDemoGrid();
         assert (grid != null);
-        System.out.println(grid.toString());
     }
 }

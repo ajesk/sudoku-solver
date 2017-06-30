@@ -1,5 +1,6 @@
 package io.acode.sudoku_solver;
 
+import io.acode.sudoku_solver.debug.DemoGridLoader;
 import io.acode.sudoku_solver.model.Grid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,12 +18,36 @@ import java.util.List;
 @Slf4j
 public class SudokuSolver {
 
-    Grid grid = new Grid();
+    private Grid grid = DemoGridLoader.getDemoGrid();
 
+
+
+    private void run() {
+        Grid lastIteration;
+
+        do {
+            lastIteration = grid;
+            grid.forEach(row -> {
+                int y = grid.indexOf(row);
+                row.forEach(cell -> {
+                    int x = row.indexOf(cell);
+                    if (cell.isSolved()) {
+                        int val = cell.getValues().get(0);
+                        grid.cleanBox(x, y, val);
+                        grid.cleanRow(y, val);
+                        grid.cleanColumn(x, val);
+                    }
+                });
+            });
+            System.out.println(grid.toString());
+        } while (true);
+
+    }
 
     public static void main(String... args) {
         log.info("starting application");
         SudokuSolver sudokuSolver = new SudokuSolver();
+        sudokuSolver.run();
     }
 
 

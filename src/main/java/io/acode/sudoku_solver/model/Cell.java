@@ -3,6 +3,7 @@ package io.acode.sudoku_solver.model;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,12 +12,14 @@ import java.util.List;
 @Data
 public class Cell {
     private List<Integer> values;
-    private boolean solved;
+    private boolean solved = false;
 
+    Cell() {
+        init();
+    }
     // Init with no value
     public void init() {
-        setValues(PossibleValues.get());
-        setSolved(false);
+        setValues(new PossibleValues().get());
     }
 
     // Init with solved value
@@ -26,7 +29,22 @@ public class Cell {
         setSolved(true);
     }
 
-    public void removeValue(Integer value) {
-        values.remove(values.indexOf(value));
+    void removeValue(Integer value) {
+        if (values.contains(value)) {
+            values.remove(values.indexOf(value));
+            if (values.size() == 1) {
+                setSolved(true);
+            } else if (values.size() == 0) {
+                System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
+        }
     }
+
+    // Just an unsolved cell provider
+    private class PossibleValues {
+        List<Integer> get() {
+            return new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
+        }
+    }
+
 }
