@@ -2,9 +2,7 @@ package io.acode.sudoku_solver.model;
 
 import io.acode.sudoku_solver.util.Locator;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 // Grid<Row<Cell/Column>>
 public class Grid extends ArrayList<ArrayList<Cell>> {
@@ -37,35 +35,30 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
     }
 
     ArrayList<Cell> getBox(int column, int row) {
-        return null;
+        return this.stream()
+            .filter(col -> Locator.locateBox(column) == Locator.locateBox(indexOf(col)))
+            .flatMap(col ->
+                col.stream()
+                    .filter(r -> Locator.locateBox(row) == Locator.locateBox(col.indexOf(r)))
+            ).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void cleanRow(int row, int value) {
-        getRow(row).stream()
-            .filter(cell -> !cell.isSolved())
-            .forEach(cell -> cell.removeValue(value));
+        getRow(row).forEach(cell -> cell.removeValue(value));
     }
 
     public void cleanColumn(int column, int value) {
-        getColumn(column).stream()
-            .filter(x -> !x.isSolved())
-            .forEach(cell -> cell.removeValue(value));
+        getColumn(column).forEach(cell -> cell.removeValue(value));
     }
 
     public void cleanBox(int x, int y, int value) {
-        this.stream()
-            .filter(row -> Locator.locateBox(this.indexOf(row)) == Locator.locateBox(y))
-            .forEach(row -> row.stream()
-                .filter(cell -> Locator.locateBox(row.indexOf(cell)) == Locator.locateBox(x))
-                .filter(cell -> !cell.isSolved())
-                .forEach(cell -> cell.removeValue(value))
-            );
+        getBox(x, y).forEach(cell -> cell.removeValue(value));
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("\n------------------------------------\n");
+        output.append("\n\n\n------------------------------------\n");
         for (int column = 0; column < 9; column++) {
             output.append("|");
             for (int row = 0; row < 9; row++) {

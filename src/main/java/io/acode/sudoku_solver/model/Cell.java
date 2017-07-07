@@ -1,10 +1,10 @@
 package io.acode.sudoku_solver.model;
 
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A specific square in the Sudoku Grid
@@ -13,13 +13,15 @@ import java.util.List;
 public class Cell {
     private List<Integer> values;
     private boolean solved = false;
+    byte[] id = new byte[5];
 
     Cell() {
         init();
     }
     // Init with no value
-    public void init() {
+    private void init() {
         setValues(new PossibleValues().get());
+        new Random().nextBytes(id);
     }
 
     // Init with solved value
@@ -30,12 +32,10 @@ public class Cell {
     }
 
     void removeValue(Integer value) {
-        if (values.contains(value)) {
+        if (values.contains(value) && !solved) {
             values.remove(values.indexOf(value));
             if (values.size() == 1) {
                 setSolved(true);
-            } else if (values.size() == 0) {
-                System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             }
         }
     }

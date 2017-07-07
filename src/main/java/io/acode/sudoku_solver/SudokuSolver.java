@@ -4,9 +4,7 @@ import io.acode.sudoku_solver.debug.DemoGridLoader;
 import io.acode.sudoku_solver.model.Grid;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * 02/23/2017
@@ -20,26 +18,23 @@ public class SudokuSolver {
 
     private Grid grid = DemoGridLoader.getDemoGrid();
 
-
-
     private void run() {
-        Grid lastIteration;
-
         do {
-            lastIteration = grid;
-            grid.forEach(row -> {
-                int y = grid.indexOf(row);
-                row.forEach(cell -> {
-                    int x = row.indexOf(cell);
-                    if (cell.isSolved()) {
-                        int val = cell.getValues().get(0);
-                        grid.cleanBox(x, y, val);
+            IntStream.range(0, 8).forEach(x -> IntStream.range(0, 8).forEach(y -> {
+                    if (grid.getCell(x, y).isSolved()) {
+                        int val = grid.getCell(x, y).getValues().get(0);
                         grid.cleanRow(y, val);
                         grid.cleanColumn(x, val);
+                        grid.cleanBox(x, y, val);
                     }
-                });
-            });
+                })
+            );
             System.out.println(grid.toString());
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
         } while (true);
 
     }

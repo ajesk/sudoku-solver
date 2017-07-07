@@ -1,6 +1,5 @@
 package io.acode.sudoku_solver.debug;
 
-import io.acode.sudoku_solver.model.Cell;
 import io.acode.sudoku_solver.model.Grid;
 
 /**
