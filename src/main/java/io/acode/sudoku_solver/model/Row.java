@@ -9,6 +9,6 @@ public class Row extends Segment {
             builder.append(cell.getValue());
             builder.append(" ");
         });
-        return builder.toString();
+        return builder.append("|").toString();
     }
 }

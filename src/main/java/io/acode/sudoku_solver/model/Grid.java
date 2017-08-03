@@ -22,49 +22,58 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
         return get(x).get(y);
     }
 
-    public Row getRow(int row) {
-        return (Row) this.stream()
+    Row getRow(int row) {
+        return this.stream()
                 .map(column -> column.get(row))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(Row::new));
     }
 
-    public Column getColumn(int x) {
-        return (Column) get(x);
+    Column getColumn(int x) {
+        return get(x).stream().collect(Collectors.toCollection(Column::new));
     }
 
-    public Box getBox(int x, int y) {
-        return (Box) this.stream()
+    Box getBox(int x, int y) {
+        return this.stream()
                 .filter(col -> Locator.locateBox(x) == Locator.locateBox(indexOf(col)))
                 .flatMap(col ->
                         col.stream()
                                 .filter(r -> Locator.locateBox(y) == Locator.locateBox(col.indexOf(r)))
-                ).collect(Collectors.toCollection(ArrayList::new));
+                ).collect(Collectors.toCollection(Box::new));
     }
 
+    /**
+     * Removes the passed in value to be removed from the cells in Cell x/y's row, column, and box.
+     * @param x - column number
+     * @param y - row number
+     * @param value - value to be removed
+     */
     public void cleanCellSegments(int x, int y, int value) {
         getRow(y).clean(value);
         getColumn(x).clean(value);
         getBox(x, y).clean(value);
     }
 
-    public boolean valueIsUnique(int x, int y, int value) {
-        return getRow(y).valueIsUnique(value) || getColumn(x).valueIsUnique(value) || getBox(x, y).valueIsUnique(value);
+    /**
+     * Checks to see if the passed in value exists in Cell x/y's row, column, and box. If it does than Cell x/y is
+     * set to that value.
+     * @param x - column number
+     * @param y - row number
+     * @param value - value to be checked for
+     */
+    public void tryToSolve(int x, int y, int value) {
+        if (getRow(y).valueIsUnique(value) || getColumn(x).valueIsUnique(value) || getBox(x, y).valueIsUnique(value)) {
+            System.out.println("["+x+","+y+"]");
+            System.out.println("before:\n " +this);
+            getCell(x, y).init(value);
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
         output.append("\n\n\n------------------------------------\n");
-        for (int column = 0; column < 9; column++) {
-            output.append("|");
-            for (int row = 0; row < 9; row++) {
-                Cell cell = getCell(row, column);
-                if (cell.isSolved()) {
-                    output.append(" " + cell.getValues().get(0).toString() + " ");
-                }
-                else output.append(" 0 ");
-                output.append("|");
-            }
+        for (int row = 0; row < 9; row++) {
+            output.append(getRow(row));
             output.append("\n------------------------------------\n");
         }
         return output.toString();

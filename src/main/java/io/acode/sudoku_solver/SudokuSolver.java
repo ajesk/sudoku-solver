@@ -33,12 +33,10 @@ public class SudokuSolver {
     private void looper() {
         IntStream.range(0, 9).forEach(x -> IntStream.range(0, 9).forEach(y -> {
             Cell cell = grid.getCell(x, y);
-            if (cell.isSolved()) grid.cleanCellSegments(x, y, cell.getValues().get(0));
-            else cell.getValues().stream().filter(val -> grid.valueIsUnique(x, y, val)).forEach(cell::init);
-            ArrayList<Cell> row = grid.getRow(y);
-            ArrayList<Cell> col = grid.getColumn(x);
-            ArrayList<Cell> box = grid.getBox(x, y);
-            System.out.print("so");
+            if (cell.isSolved()) grid.cleanCellSegments(x, y, cell.getValue());
+            else cell.getValues().forEach(val -> {
+                if (!cell.isSolved()) grid.tryToSolve(x, y, val);
+            });
         }));
     }
 
@@ -47,7 +45,7 @@ public class SudokuSolver {
             looper();
             System.out.println(grid.toString());
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (Exception e) {
                 //todo bad news bears
             }

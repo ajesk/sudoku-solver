@@ -19,9 +19,10 @@ public class Cell {
         init();
     }
     // Init with no value
-    private void init() {
+    void init() {
         setValues(new PossibleValues().get());
         new Random().nextBytes(id);
+        setSolved(false);
     }
 
     // Init with solved value
@@ -40,7 +41,7 @@ public class Cell {
         }
     }
 
-    int getValue() {
+    public int getValue() {
         return isSolved() ? values.get(0) : 0;
     }
 
