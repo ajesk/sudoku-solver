@@ -4,7 +4,8 @@ import io.acode.sudoku_solver.debug.DemoGridLoader;
 import io.acode.sudoku_solver.model.Cell;
 import io.acode.sudoku_solver.model.Grid;
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
+
+import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 /**
@@ -18,42 +19,27 @@ import java.util.stream.IntStream;
 public class SudokuSolver {
 
     private Grid grid = DemoGridLoader.getDemoGrid();
+    private int changedValues = 0;
 
     /**
      * Loops through the 81 cells included withing the sudoku grid and calls the 2 methods for removing possible values
-     * and solving cells.
+     * and solving cells. If the cell is solved it removes all of the values in the related unsolved cells. If the cell
+     * is unsolved it then checks all of its values to see if it contains a unique value. If it has a unique value
+     * it then sets is value to that.
      *
      * IMPORTANT!!! Do not confuse this with the movie of the same title. They have almost nothing in common. I would
      * recommend that you go see if though.
      */
     private void looper() {
-        IntStream.range(0, 8).forEach(x -> IntStream.range(0, 8).forEach(y -> {
+        IntStream.range(0, 9).forEach(x -> IntStream.range(0, 9).forEach(y -> {
             Cell cell = grid.getCell(x, y);
-            if (cell.isSolved()) cleanGrid(x, y, cell.getValues().get(0));
-            else isolateValues(x, y, cell.getValues());
+            if (cell.isSolved()) grid.cleanCellSegments(x, y, cell.getValues().get(0));
+            else cell.getValues().stream().filter(val -> grid.valueIsUnique(x, y, val)).forEach(cell::init);
+            ArrayList<Cell> row = grid.getRow(y);
+            ArrayList<Cell> col = grid.getColumn(x);
+            ArrayList<Cell> box = grid.getBox(x, y);
+            System.out.print("so");
         }));
-    }
-
-    /**
-     * This method takes the x and y coordinates of a solved cell and removes all of the instances of that number from
-     * its row, column, and box from the unsolved boxes possible values
-     * @param x coord
-     * @param y coord
-     */
-    private void cleanGrid(int x, int y, int value) {
-        grid.cleanRow(y, value);
-        grid.cleanColumn(x, value);
-        grid.cleanBox(x, y, value);
-    }
-
-    /**
-     * Takes the x and y coordinates of an unsolved cell and validates if it contains a values that is not a possible/
-     * actual value in any any other related boxes.
-     * @param x coord
-     * @param y coord
-     */
-    private void isolateValues(int x, int y, List<Integer> value) {
-
     }
 
     private void run() {

@@ -4,4 +4,5 @@ gradle/
 gradlew
 gradlew.bat
 build
-sudokuSolver.iml
+sudoku-solver.iml
+out

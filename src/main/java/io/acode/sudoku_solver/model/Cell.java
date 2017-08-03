@@ -40,6 +40,10 @@ public class Cell {
         }
     }
 
+    int getValue() {
+        return isSolved() ? values.get(0) : 0;
+    }
+
     // Just an unsolved cell provider
     private class PossibleValues {
         List<Integer> get() {

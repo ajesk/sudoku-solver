@@ -3,6 +3,7 @@ package io.acode.sudoku_solver.model;
 import io.acode.sudoku_solver.util.Locator;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // Grid<Row<Cell/Column>>
 public class Grid extends ArrayList<ArrayList<Cell>> {
@@ -11,48 +12,43 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
     }
 
     private void initCells() {
-        for (int x = 0; x < 9; x++) {
+        IntStream.range(0, 9).forEach(x -> {
             add(new ArrayList<>());
-            for (int y = 0; y < 9; y++) {
-                get(x).add(new Cell());
-            }
-        }
+            IntStream.range(0, 9).forEach(y -> get(x).add(new Cell()));
+        });
     }
 
-    public Cell getCell(int column, int row) {
-        return get(column).get(row);
+    public Cell getCell(int x, int y) {
+        return get(x).get(y);
     }
 
-    ArrayList<Cell> getRow(int row) {
-        return this.stream()
+    public Row getRow(int row) {
+        return (Row) this.stream()
                 .map(column -> column.get(row))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    ArrayList<Cell> getColumn(int column) {
-        return get(column);
-
+    public Column getColumn(int x) {
+        return (Column) get(x);
     }
 
-    ArrayList<Cell> getBox(int column, int row) {
-        return this.stream()
-            .filter(col -> Locator.locateBox(column) == Locator.locateBox(indexOf(col)))
-            .flatMap(col ->
-                col.stream()
-                    .filter(r -> Locator.locateBox(row) == Locator.locateBox(col.indexOf(r)))
-            ).collect(Collectors.toCollection(ArrayList::new));
+    public Box getBox(int x, int y) {
+        return (Box) this.stream()
+                .filter(col -> Locator.locateBox(x) == Locator.locateBox(indexOf(col)))
+                .flatMap(col ->
+                        col.stream()
+                                .filter(r -> Locator.locateBox(y) == Locator.locateBox(col.indexOf(r)))
+                ).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public void cleanRow(int row, int value) {
-        getRow(row).forEach(cell -> cell.removeValue(value));
+    public void cleanCellSegments(int x, int y, int value) {
+        getRow(y).clean(value);
+        getColumn(x).clean(value);
+        getBox(x, y).clean(value);
     }
 
-    public void cleanColumn(int column, int value) {
-        getColumn(column).forEach(cell -> cell.removeValue(value));
-    }
-
-    public void cleanBox(int x, int y, int value) {
-        getBox(x, y).forEach(cell -> cell.removeValue(value));
+    public boolean valueIsUnique(int x, int y, int value) {
+        return getRow(y).valueIsUnique(value) || getColumn(x).valueIsUnique(value) || getBox(x, y).valueIsUnique(value);
     }
 
     @Override
